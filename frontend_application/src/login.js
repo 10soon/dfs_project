@@ -38,7 +38,7 @@ const Login = () => {
     // console.log("After login submit")
     // console.log(firstName, lastName, email, password)
     myContext.setUserData(firstName)
-    navigate("/dashbaord")
+    navigate("/dashboard")
     // console.log("after setting global variable. Value: "+ (myContext.username))
     // setUser(firstName)
   }

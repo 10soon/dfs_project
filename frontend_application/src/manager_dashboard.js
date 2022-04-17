@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import Typography from '@mui/material/Typography'
@@ -10,6 +10,7 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Button from '@mui/material/Button'
 import {useNavigate} from 'react-router-dom'
+import globalContext from "./globalContext"
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -48,10 +49,17 @@ function Manager_Dashboard () {
   const [data, setData] = useState([])
   const [value, setValue] = useState(0)
   let navigate = useNavigate();
+  const myContext = useContext(globalContext);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     // console.log(newValue)
     setValue(newValue)
+  }
+
+  const handleMoreDetails = datasetID => () => {
+    console.log(datasetID)
+    myContext.setDatasetIDfunc(datasetID)
+    navigate('/dashboard/datasetinfo')
   }
 
   useEffect(() => {
@@ -99,7 +107,7 @@ function Manager_Dashboard () {
                     <div>File Type: {item.file_type}</div>
                     <div>Version: {item.version}</div>
                     <div>Date: {item.date_time}</div>
-                    <Button color='primary'>More Details</Button>
+                    <Button color='primary' onClick = {handleMoreDetails(item.dataset_ID)}>More Details</Button>
                   </Typography>
                 </AccordionDetails>
               </Accordion>
@@ -125,7 +133,7 @@ function Manager_Dashboard () {
                     <div>File Type: {item.file_type}</div>
                     <div>Version: {item.version}</div>
                     <div>Date: {item.date_time}</div>
-                    <Button color='primary'>More Details</Button>
+                    <Button color='primary' onClick = {handleMoreDetails(item.dataset_ID)}>More Details</Button>
                   </Typography>
                 </AccordionDetails>
               </Accordion>
@@ -151,7 +159,7 @@ function Manager_Dashboard () {
                     <div>File Type: {item.file_type}</div>
                     <div>Version: {item.version}</div>
                     <div>Date: {item.date_time}</div>
-                    <Button color='primary'>More Details</Button>
+                    <Button color='primary' onClick = {handleMoreDetails(item.dataset_ID)}>More Details</Button>
                   </Typography>
                 </AccordionDetails>
               </Accordion>
