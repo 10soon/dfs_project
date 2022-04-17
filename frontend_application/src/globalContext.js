@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react'
+import React, { createContext } from 'react'
 
 const globalContext = createContext()
 

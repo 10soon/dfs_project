@@ -6,12 +6,12 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 // import IconButton from '@mui/material/IconButton';
 // import MenuIcon from '@mui/icons-material/Menu';
-import Button from '@mui/material/Button';
+// import Button from '@mui/material/Button';
 // import Menu from '@mui/material/Menu';
 // import MenuItem from '@mui/material/MenuItem';
 import globalContext from "./globalContext"
 
-function Header(user) {
+function Header() {
     // const [anchorEl, setAnchorEl] = useState(null) // < null | HTMLElement > (null);
     // const open = Boolean(anchorEl);
     // const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -21,8 +21,6 @@ function Header(user) {
     //     setAnchorEl(null);
     // };
     const myContext = useContext(globalContext);
-
-    console.log(myContext)
 
     return (
         <Box sx={{ flexGrow: 1 }}>

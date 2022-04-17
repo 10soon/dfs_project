@@ -9,6 +9,7 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Button from '@mui/material/Button'
+import {useNavigate} from 'react-router-dom'
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -46,6 +47,7 @@ function a11yProps (index: number) {
 function Manager_Dashboard () {
   const [data, setData] = useState([])
   const [value, setValue] = useState(0)
+  let navigate = useNavigate();
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     // console.log(newValue)
