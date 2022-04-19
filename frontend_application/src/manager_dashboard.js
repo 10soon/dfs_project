@@ -59,20 +59,25 @@ function Manager_Dashboard () {
   const handleMoreDetails = datasetID => () => {
     console.log(datasetID)
     myContext.setDatasetIDfunc(datasetID)
-    navigate('/dashboard/datasetinfo')
+    const path = '/dashboard/datasetinfo?datasetID=' + datasetID.toString();
+    navigate(path)
   }
 
   useEffect(() => {
     async function fetchData () {
       // cuz base url already set up in axios.js
       const req = await axios.get('/universal_table/get_data')
-
+      console.log("Before setting",req.data)
       // whatever the request.data comes back us
       setData(req.data)
     }
 
     fetchData()
+
+    // console.log("After setting", data)
   }, [])
+
+  console.log("Printing now", data)
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -91,9 +96,9 @@ function Manager_Dashboard () {
       <TabPanel value={value} index={0}>
         <div>
           {data
-            .filter(item => item.status === 'Pending')
+            .filter(item => item.dataset_status === 'pending')
             .map(item => (
-              <Accordion key={item.dataset_ID}>
+              <Accordion key={item.dataset_id}>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls='panel1a-content'
@@ -103,11 +108,11 @@ function Manager_Dashboard () {
                 </AccordionSummary>
                 <AccordionDetails>
                   <Typography component = "span">
-                    <div>Source: {item.source}</div>
-                    <div>File Type: {item.file_type}</div>
-                    <div>Version: {item.version}</div>
-                    <div>Date: {item.date_time}</div>
-                    <Button color='primary' onClick = {handleMoreDetails(item.dataset_ID)}>More Details</Button>
+                    <div>Source: {item.dataset_source}</div>
+                    <div>File Type: {item.dataset_content_type}</div>
+                    <div>Version: {item.dataset_version}</div>
+                    <div>Date: {item.dataset_date}</div>
+                    <Button color='primary' onClick = {handleMoreDetails(item.dataset_id)}>More Details</Button>
                   </Typography>
                 </AccordionDetails>
               </Accordion>
@@ -117,9 +122,9 @@ function Manager_Dashboard () {
       <TabPanel value={value} index={1}>
         <div>
           {data
-            .filter(item => item.status === 'Processing')
+            .filter(item => item.dataset_status === 'processing')
             .map(item => (
-              <Accordion key={item.dataset_ID}>
+              <Accordion key={item.dataset_id}>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls='panel1a-content'
@@ -129,11 +134,11 @@ function Manager_Dashboard () {
                 </AccordionSummary>
                 <AccordionDetails>
                   <Typography component = "span">
-                    <div>Source: {item.source}</div>
-                    <div>File Type: {item.file_type}</div>
-                    <div>Version: {item.version}</div>
-                    <div>Date: {item.date_time}</div>
-                    <Button color='primary' onClick = {handleMoreDetails(item.dataset_ID)}>More Details</Button>
+                    <div>Source: {item.dataset_source}</div>
+                    <div>File Type: {item.dataset_content_type}</div>
+                    <div>Version: {item.dataset_version}</div>
+                    <div>Date: {item.dataset_date}</div>
+                    <Button color='primary' onClick = {handleMoreDetails(item.dataset_id)}>More Details</Button>
                   </Typography>
                 </AccordionDetails>
               </Accordion>
@@ -143,9 +148,9 @@ function Manager_Dashboard () {
       <TabPanel value={value} index={2}>
         <div>
           {data
-            .filter(item => item.status === 'APPROVED')
+            .filter(item => item.dataset_status === 'approved')
             .map(item => (
-              <Accordion key={item.dataset_ID}>
+              <Accordion key={item.dataset_id}>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls='panel1a-content'
@@ -155,11 +160,11 @@ function Manager_Dashboard () {
                 </AccordionSummary>
                 <AccordionDetails>
                   <Typography component = "span">
-                    <div>Source: {item.source}</div>
-                    <div>File Type: {item.file_type}</div>
-                    <div>Version: {item.version}</div>
-                    <div>Date: {item.date_time}</div>
-                    <Button color='primary' onClick = {handleMoreDetails(item.dataset_ID)}>More Details</Button>
+                    <div>Source: {item.dataset_source}</div>
+                    <div>File Type: {item.dataset_content_type}</div>
+                    <div>Version: {item.dataset_version}</div>
+                    <div>Date: {item.dataset_date}</div>
+                    <Button color='primary' onClick = {handleMoreDetails(item.dataset_id)}>More Details</Button>
                   </Typography>
                 </AccordionDetails>
               </Accordion>

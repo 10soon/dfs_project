@@ -44,7 +44,7 @@ function App () {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={ role === 0 ? <Manager_Dashboard /> : <Employee_Dashboard />} />
-        <Route path="/dashboard/datasetinfo" element={<DatasetInfo/>} />
+        <Route path="/dashboard/datasetinfo" element={<DatasetInfo />} />
         <Route path="*" element={<div> Error 404. Page not found. </div>} />
       </Routes>
     </globalContext.Provider>
