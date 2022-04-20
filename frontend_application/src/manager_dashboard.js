@@ -67,7 +67,7 @@ function Manager_Dashboard () {
     async function fetchData () {
       // cuz base url already set up in axios.js
       const req = await axios.get('/universal_table/get_data')
-      console.log("Before setting",req.data)
+      console.log("Before setting", req.data)
       // whatever the request.data comes back us
       setData(req.data)
     }

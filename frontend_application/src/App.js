@@ -7,6 +7,7 @@ import Home from './home'
 import Login from './login'
 import globalContext from './globalContext'
 import DatasetInfo from './datasetinfo'
+import DivideDataset from './dividedataset'
 
 function App () {
   const [user, setUser] = useState('')
@@ -45,6 +46,7 @@ function App () {
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={ role === 0 ? <Manager_Dashboard /> : <Employee_Dashboard />} />
         <Route path="/dashboard/datasetinfo" element={<DatasetInfo />} />
+        <Route path="/dashboard/dividedataset" element={<DivideDataset />} />
         <Route path="*" element={<div> Error 404. Page not found. </div>} />
       </Routes>
     </globalContext.Provider>

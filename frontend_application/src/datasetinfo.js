@@ -22,17 +22,26 @@ function Datasetinfo () {
   const [data, setData] = useState([])
   const [searchParams] = useSearchParams();
   const code = searchParams.get('datasetID');
+  const navigate = useNavigate();
+
+  const handleDivideDataset = datasetID => () => {
+    console.log(datasetID)
+    // myContext.setDatasetIDfunc(datasetID)
+    const path = '/dashboard/dividedataset?datasetID=' + datasetID.toString();
+    navigate(path)
+  }
 
   useEffect(() => {
     async function fetchData () {
       const req = await axios.get('/universal_table/get_data')
+      const req2 = await req
       setData(req.data.filter(item => item.dataset_id === code)) 
     }
     fetchData()
   }, [])
 
-
   return (
+    data.length > 0 ?
     <Box
       sx={{
         flexGrow: 1,
@@ -61,10 +70,12 @@ function Datasetinfo () {
       <Divider />
       <Stack spacing={2} direction="row">
       <Button variant="outlined">Verify Source</Button>
-        <Button variant="outlined">Divide Dataset</Button>
+        <Button variant="outlined" onClick={handleDivideDataset(data[0].dataset_id)}>Divide Dataset</Button>
         <Button variant="outlined">Send Source Feedback</Button>
       </Stack>
     </Box>
+    :
+    <div> LOADING </div>
   )
 }
 
