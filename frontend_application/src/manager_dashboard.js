@@ -9,8 +9,8 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Button from '@mui/material/Button'
-import {useNavigate} from 'react-router-dom'
-import globalContext from "./globalContext"
+import { useNavigate } from 'react-router-dom'
+import globalContext from './globalContext'
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -47,19 +47,20 @@ function a11yProps (index: number) {
 
 function Manager_Dashboard () {
   const [data, setData] = useState([])
+  const [source_id_arr, setSourceID] = useState(new Set())
+  const [source_data, setSourceData] = useState([])
   const [value, setValue] = useState(0)
-  let navigate = useNavigate();
-  const myContext = useContext(globalContext);
+  let navigate = useNavigate()
+  const myContext = useContext(globalContext)
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    // console.log(newValue)
     setValue(newValue)
   }
 
   const handleMoreDetails = datasetID => () => {
     console.log(datasetID)
     myContext.setDatasetIDfunc(datasetID)
-    const path = '/dashboard/datasetinfo?datasetID=' + datasetID.toString();
+    const path = '/dashboard/datasetinfo?datasetID=' + datasetID.toString()
     navigate(path)
   }
 
@@ -67,17 +68,48 @@ function Manager_Dashboard () {
     async function fetchData () {
       // cuz base url already set up in axios.js
       const req = await axios.get('/universal_table/get_data')
-      console.log("Before setting",req.data)
       // whatever the request.data comes back us
       setData(req.data)
     }
 
     fetchData()
-
-    // console.log("After setting", data)
   }, [])
 
-  console.log("Printing now", data)
+  useEffect(() => {
+    setSourceID(new Set(data.map(x => x.dataset_source_id)))
+  }, [data])
+
+  useEffect(() => {
+    async function fetchSource () {
+      const req = await axios.get('/universal_table/get_source_data')
+      setSourceData(req.data)
+    }
+    fetchSource()
+  }, [source_id_arr])
+
+  useEffect(() => {
+    async function add_source_data () {
+      // console.log("source id arr\n", source_id_arr)
+      var table_source_ids = source_data.map(x => x.source_id)
+      // console.log("table source ids\n", table_source_ids)
+      for (let id of source_id_arr) {
+        console.log("Iterating for", id)
+        if (!table_source_ids.includes(id)) { 
+          console.log(id, 'not in table. Inserting')
+          const response = await axios
+            .post('/universal_table/set_source_data', {
+              source_id: id,
+              date_verified: '2000-10-10 10:10:10'
+            })
+            .then(response => {
+              console.log("Insertion for ", id, "complete")
+              // console.log(response.data)
+            })
+        }
+      }
+    }
+    add_source_data()
+  }, [source_id_arr, source_data])
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -107,12 +139,17 @@ function Manager_Dashboard () {
                   <Typography>{item.dataset_name}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <Typography component = "span">
+                  <Typography component='span'>
                     <div>Source: {item.dataset_source}</div>
                     <div>File Type: {item.dataset_content_type}</div>
                     <div>Version: {item.dataset_version}</div>
                     <div>Date: {item.dataset_date}</div>
-                    <Button color='primary' onClick = {handleMoreDetails(item.dataset_id)}>More Details</Button>
+                    <Button
+                      color='primary'
+                      onClick={handleMoreDetails(item.dataset_id)}
+                    >
+                      More Details
+                    </Button>
                   </Typography>
                 </AccordionDetails>
               </Accordion>
@@ -133,12 +170,17 @@ function Manager_Dashboard () {
                   <Typography>{item.dataset_name}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <Typography component = "span">
+                  <Typography component='span'>
                     <div>Source: {item.dataset_source}</div>
                     <div>File Type: {item.dataset_content_type}</div>
                     <div>Version: {item.dataset_version}</div>
                     <div>Date: {item.dataset_date}</div>
-                    <Button color='primary' onClick = {handleMoreDetails(item.dataset_id)}>More Details</Button>
+                    <Button
+                      color='primary'
+                      onClick={handleMoreDetails(item.dataset_id)}
+                    >
+                      More Details
+                    </Button>
                   </Typography>
                 </AccordionDetails>
               </Accordion>
@@ -159,12 +201,17 @@ function Manager_Dashboard () {
                   <Typography>{item.dataset_name}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <Typography component = "span">
+                  <Typography component='span'>
                     <div>Source: {item.dataset_source}</div>
                     <div>File Type: {item.dataset_content_type}</div>
                     <div>Version: {item.dataset_version}</div>
                     <div>Date: {item.dataset_date}</div>
-                    <Button color='primary' onClick = {handleMoreDetails(item.dataset_id)}>More Details</Button>
+                    <Button
+                      color='primary'
+                      onClick={handleMoreDetails(item.dataset_id)}
+                    >
+                      More Details
+                    </Button>
                   </Typography>
                 </AccordionDetails>
               </Accordion>
