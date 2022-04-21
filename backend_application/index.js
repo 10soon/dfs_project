@@ -20,8 +20,8 @@ app.use(bodyParser.json())
 var con = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  // password: "Raj@2022",
-  password: 'Admin@123',
+  password: "Raj@2022",
+  // password: 'Admin@123',
   database: 'universal_table'
 })
 
@@ -85,7 +85,6 @@ function init_dataset_table (funzipped, data) {
       if (z === i) {
         const p = '../unzipped_dataset/' + i
         const f = getFiles(p)
-        let p_id = 0
 
         for (const k in f) {
           let tmp = p + '/' + f[k]
@@ -97,13 +96,11 @@ function init_dataset_table (funzipped, data) {
 
             for (const a in sheetnames) {
               let sheetpath = tmp + '?sheet=' + sheetnames[a]
-              console.log(data[j].dataset_id, p_id, sheetpath)
-              values.push([data[j].dataset_id, p_id, sheetpath])
-              p_id = p_id + 1
+              console.log(data[j].dataset_id, sheetpath)
+              values.push([data[j].dataset_id, sheetpath])
             }
           } else {
-            values.push([data[j].dataset_id, p_id, tmp])
-            p_id = p_id + 1
+            values.push([data[j].dataset_id, tmp])
           }
         }
         break
@@ -111,7 +108,7 @@ function init_dataset_table (funzipped, data) {
     }
   }
   // console.log(values);
-  let q = 'insert into `dataset_details` (`dataset_id`, `dataset_path_id`, `dataset_path_name`) values ?'
+  let q = 'insert into `dataset_details` (`dataset_id`, `dataset_path_name`) values ?'
   con.query(q, [values], function (err, result) {
     if (err) throw err
   })
@@ -164,7 +161,7 @@ app.get('/universal_table/get_source_data', (req, res) => {
 })
 
 app.post('/universal_table/set_source_data', (req, res) => {
-  console.log('Received insert request')
+  console.log('Received insert request for populating default values in source_verification_status...')
   // console.log(req.body)
 
   con.query(
@@ -179,7 +176,7 @@ app.post('/universal_table/set_source_data', (req, res) => {
 })
 
 app.post('/universal_table/update_source_data', (req, res) => {
-  console.log('Received update request')
+  console.log('Received update request to verify user...')
   // console.log(req.body)
 
   con.query(
@@ -193,7 +190,7 @@ app.post('/universal_table/update_source_data', (req, res) => {
 })
 
 app.post('/universal_table/update_comments_data', (req, res) => {
-  console.log('Received update request')
+  console.log('Received update request for adding comment...')
   // console.log(req.body)
 
   // console.log('dataset id: ', req.body.dataset_id)
@@ -227,27 +224,6 @@ app.get('/universal_table/get_employee_work_info', (req, res) => {
     res.status(200).send(result)
   })
 })
-
-app.get("/universal_table/get_dataset_info", (req, res) => {
-  con.query("SELECT * FROM dataset_details", function (err, result, fields) {
-    if (err) throw err;
-    res.status(200).send(result);
-  });
-});
-
-app.get("/universal_table/get_employee_info", (req, res) => {
-  con.query("SELECT * FROM emp_data", function (err, result, fields) {
-    if (err) throw err;
-    res.status(200).send(result);
-  });
-});
-
-app.get("/universal_table/get_employee_work_info", (req, res) => {
-  con.query("SELECT * FROM emp_proj_data", function (err, result, fields) {
-    if (err) throw err;
-    res.status(200).send(result);
-  });
-});
 
 // Listener
 app.listen(port, () => console.log(`listening on localhost: ${port}`))

@@ -7,16 +7,27 @@ import { styled } from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Checkbox from '@mui/material/Checkbox'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import FormGroup from '@mui/material/FormGroup'
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
   padding: theme.spacing(1),
   width: '100%',
-  height: '100%',
-  //   textAlign: 'center',
+//   height: '100%',
+//   textAlign: 'center',
   color: theme.palette.text.secondary
 }))
+
+
+const Div = styled('div')(({ theme }) => ({
+    ...theme.typography.button,
+    backgroundColor: theme.palette.background.paper,
+    padding: theme.spacing(1),
+  }));
 
 // const addUrl = node => {
 //     const fakeUrl = `root/${node.name}`;
@@ -314,9 +325,13 @@ function DivideDataset () {
 
   return data.length > 0 ? (
     <div className='home'>
-      <Box sx={{ width: '100%', height: '100%' }}>
+      <Box sx={{ width: '100', height: '100', padding: '20px' }}>
         <Grid container>
           <Grid item xs={6}>
+            <Box textAlign='center'>
+                <Div>{"Files in the Dataset"}</Div>
+            </Box>
+          <Paper style={{height: 600, overflow: 'auto', width: '95'}}>
             <Item>
               <FolderTree
                 data={tree_state}
@@ -324,11 +339,33 @@ function DivideDataset () {
                 onNameClick={onNameClick}
               />
             </Item>
+            </Paper>
           </Grid>
           <Grid item xs={6}>
-            <Item>2</Item>
+            <Box textAlign='center'>
+            <Div>{"Employee List"}</Div>
+            </Box>
+          <Paper style={{height: 600, overflow: 'auto', width: '95'}}>
+            <Item>
+                {empdata.filter(item => item.emp_role === 0).map(item => 
+                    <FormGroup>
+                        <FormControlLabel control={<Checkbox />} label={item.emp_id} />
+                    </FormGroup>
+                )}
+            </Item>
+            </Paper>
           </Grid>
         </Grid>
+      </Box>
+      <Box textAlign='center'>
+        <Button
+          id='add_btn'
+          variant='outlined'
+          size='large'
+        //   onClick={() => verify_source()}
+        >
+          Add
+        </Button>
       </Box>
     </div>
   ) : (

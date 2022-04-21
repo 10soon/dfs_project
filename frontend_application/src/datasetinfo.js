@@ -1,5 +1,4 @@
 import { React, useState, useContext, useEffect } from 'react'
-// import globalContext from './globalContext'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import axios from './axios'
 import { styled } from '@mui/material/styles'
@@ -36,7 +35,6 @@ function Datasetinfo () {
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
-
   const [data, setData] = useState([])
   const [source_data, setSourceData] = useState([])
   const [verify_src_btn_is_disabled, setSrcBtn] = useState(false)
