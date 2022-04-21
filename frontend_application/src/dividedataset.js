@@ -182,18 +182,12 @@ function DivideDataset () {
           var folder = folders[j].split('.' + file_type)
           // console.log(folder)
 
-          if (Object.keys(t2_tree_state).length === 0) {
-            // console.log('root case')
-            t2_tree_state.name = folder[0]
-            t2_tree_state.checked = 0
-            t2_tree_state.children = []
-            t2_tree_state.isOpen = false
-          } else {
-            if (folder[0] !== t2_tree_state.name) {
-              // console.log('root not empty and name didnt match')
-              // console.log('in', t2_tree_state.name)
-              var k
-              var found_flag = false
+          if (folder[0] !== t2_tree_state.name) {
+            // console.log('root not empty and name didnt match')
+            // console.log('in', t2_tree_state.name)
+            var k
+            var found_flag = false
+            if ('children' in t2_tree_state) {
               for (k = 0; k < t2_tree_state.children.length; ++k) {
                 if (t2_tree_state.children[k].name === folder[0]) {
                   // console.log('folder found in tree')
@@ -203,40 +197,38 @@ function DivideDataset () {
                   break
                 }
               }
-              if (!found_flag) {
-                // console.log('folder not in tree')
-                var t3 = {}
-                t3.name = folder[0]
-                t3.checked = 0
-                t3.children = []
-                t3.isOpen = true
-                t2_tree_state.children.push(t3)
-                t2_tree_state =
-                  t2_tree_state.children[t2_tree_state.children.length - 1]
-                // console.log('Adding new object: ', temp_tree_state)
+            }
+
+            if (!found_flag) {
+              // console.log('folder not in tree')
+              var t3 = {}
+              t3.name = folder[0]
+              t3.checked = 0
+              // t3.children = []
+              // t3.isOpen = true
+              if(!('children' in t2_tree_state)) {
+                t2_tree_state.children = []
               }
-            } 
-            // else {
-            //   // console.log('name matched with: ', t2_tree_state.name)
-            // }
+              t2_tree_state.children.push(t3)
+              t2_tree_state =
+                t2_tree_state.children[t2_tree_state.children.length - 1]
+              // console.log('Adding new object: ', temp_tree_state)
+            }
           }
+          // else {
+          //   // console.log('name matched with: ', t2_tree_state.name)
+          // }
 
           if (file_type === 'xlsx') {
             var sheetname = folder[1].split('sheet=')[1]
             // console.log(sheetname)
 
-            if (Object.keys(t2_tree_state).length === 0) {
-              // console.log('root case')
-              t2_tree_state.name = sheetname
-              t2_tree_state.checked = 0
-              t2_tree_state.children = []
-              t2_tree_state.isOpen = false
-            } else {
-              if (sheetname !== t2_tree_state.name) {
-                // console.log('root not empty and name didnt match')
-                // console.log('in', t2_tree_state.name)
-                var k
-                var found_flag = false
+            if (sheetname !== t2_tree_state.name) {
+              // console.log('root not empty and name didnt match')
+              // console.log('in', t2_tree_state.name)
+              var k
+              var found_flag = false
+              if ('children' in t2_tree_state) {
                 for (k = 0; k < t2_tree_state.children.length; ++k) {
                   if (t2_tree_state.children[k].name === sheetname) {
                     // console.log('folder found in tree')
@@ -246,23 +238,26 @@ function DivideDataset () {
                     break
                   }
                 }
-                if (!found_flag) {
-                  // console.log('folder not in tree')
-                  var t3 = {}
-                  t3.name = sheetname
-                  t3.checked = 0
-                  t3.children = []
-                  t3.isOpen = false
-                  t2_tree_state.children.push(t3)
-                  t2_tree_state =
-                    t2_tree_state.children[t2_tree_state.children.length - 1]
-                  // console.log('Adding new object: ', temp_tree_state)
+              }
+              if (!found_flag) {
+                // console.log('folder not in tree')
+                var t3 = {}
+                t3.name = sheetname
+                t3.checked = 0
+                // t3.children = []
+                // t3.isOpen = false
+                if(!('children' in t2_tree_state)) {
+                  t2_tree_state.children = []
                 }
-              } 
-              // else {
-              //   console.log('name matched with: ', t2_tree_state.name)
-              // }
+                t2_tree_state.children.push(t3)
+                t2_tree_state =
+                  t2_tree_state.children[t2_tree_state.children.length - 1]
+                // console.log('Adding new object: ', temp_tree_state)
+              }
             }
+            // else {
+            //   console.log('name matched with: ', t2_tree_state.name)
+            // }
           }
           break
         }
@@ -271,21 +266,23 @@ function DivideDataset () {
           // console.log('root case')
           t2_tree_state.name = folders[j]
           t2_tree_state.checked = 0
-          t2_tree_state.children = []
-          t2_tree_state.isOpen = false
+          // t2_tree_state.children = []
+          // t2_tree_state.isOpen = false
         } else {
           if (folders[j] !== t2_tree_state.name) {
             // console.log('root not empty and name didnt match')
             // console.log('in', t2_tree_state.name)
             var k
             var found_flag = false
-            for (k = 0; k < t2_tree_state.children.length; ++k) {
-              if (t2_tree_state.children[k].name === folders[j]) {
-                // console.log('folder found in tree')
-                t2_tree_state.isOpen = true
-                t2_tree_state = t2_tree_state.children[k]
-                found_flag = true
-                break
+            if ('children' in t2_tree_state) {
+              for (k = 0; k < t2_tree_state.children.length; ++k) {
+                if (t2_tree_state.children[k].name === folders[j]) {
+                  // console.log('folder found in tree')
+                  t2_tree_state.isOpen = true
+                  t2_tree_state = t2_tree_state.children[k]
+                  found_flag = true
+                  break
+                }
               }
             }
             if (!found_flag) {
@@ -293,8 +290,11 @@ function DivideDataset () {
               var t3 = {}
               t3.name = folders[j]
               t3.checked = 0
-              t3.children = []
-              t3.isOpen = false
+              // t3.children = []
+              // t3.isOpen = false
+              if(!('children' in t2_tree_state)) {
+                t2_tree_state.children = []
+              }
               t2_tree_state.children.push(t3)
               t2_tree_state =
                 t2_tree_state.children[t2_tree_state.children.length - 1]
