@@ -20,8 +20,8 @@ app.use(bodyParser.json())
 var con = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: "Raj@2022",
-  // password: 'Admin@123',
+  // password: "Raj@2022",
+  password: 'Admin@123',
   database: 'universal_table'
 })
 
@@ -223,6 +223,21 @@ app.get('/universal_table/get_employee_work_info', (req, res) => {
     if (err) throw err
     res.status(200).send(result)
   })
+})
+
+app.post('/universal_table/set_emp_proj_data', (req, res) => {
+  console.log('Received insert request emp proj data table')
+  console.log(req.body)
+
+  con.query(
+    'INSERT INTO emp_proj_data (emp_id, emp_project_path_id) VALUES (?,?)',
+    [req.body.emp_id, req.body.emp_path_id],
+    function (err, result) {
+      if (err) console.log(err)
+      console.log(result)
+      res.status(200).send(result)
+    }
+  )
 })
 
 // Listener
