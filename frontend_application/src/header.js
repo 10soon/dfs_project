@@ -23,9 +23,20 @@ function Header() {
     const myContext = useContext(globalContext);
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
+        <>
+        <nav className="navbar navbar-dark bg-dark py-3">
+            <div className="container">
+            <div className="navbar-brand">
+            Data Foundation Systems: Dataset Entry Verification Workflow
+            </div>
+            <a className="navbar-brand">
+            Welcome {myContext.username}
+            </a>
+            </div>
+        </nav>
+        {/* <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
-                <Toolbar>
+                <Toolbar> */}
                     {/* <IconButton
                         id="demo-positioned-button"
                         aria-controls={open ? 'demo-positioned-menu' : undefined}
@@ -57,13 +68,14 @@ function Header() {
                         <MenuItem onClick={handleClose}>Logout</MenuItem>
                     </Menu> */}
 
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    {/* <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                         Data Foundation Systems: Dataset Entry Verification Workflow
                     </Typography>
                     Welcome {myContext.username}
                 </Toolbar>
             </AppBar>
-        </Box>
+        </Box> */}
+    </>
     );
 }
 

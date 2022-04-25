@@ -5,9 +5,19 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #dfe4ea;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.card-body{
+  background-color: rgb(96, 96, 102) !important;
+}
+
+.data-card{
+  background-color: #dfe4ea
+  !important;
 }

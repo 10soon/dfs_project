@@ -11,6 +11,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Button from '@mui/material/Button'
 import { useNavigate } from 'react-router-dom'
 import globalContext from './globalContext'
+import "./index.css"
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -113,6 +114,7 @@ function Manager_Dashboard () {
   }, [source_id_arr, source_data])
 
   return (
+  
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
@@ -121,101 +123,173 @@ function Manager_Dashboard () {
           onChange={handleChange}
           aria-label='basic tabs example'
         >
+          
           <Tab label='To Be Verified' {...a11yProps(0)} />
           <Tab label='In Process of Verification' {...a11yProps(1)} />
           <Tab label='Verified' {...a11yProps(2)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <div>
+      <div className="container d-flex flex-row flex-wrap">
           {data
             .filter(item => item.dataset_status === 'pending')
             .map(item => (
-              <Accordion key={item.dataset_id}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls='panel1a-content'
-                  id='panel1a-header'
-                >
-                  <Typography>{item.dataset_name}</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography component='span'>
-                    <div>Source: {item.dataset_source}</div>
-                    <div>File Type: {item.dataset_content_type}</div>
-                    <div>Version: {item.dataset_version}</div>
-                    <div>Date: {item.dataset_date}</div>
-                    <Button
-                      color='primary'
+              // <Accordion key={item.dataset_id}>
+              //   <AccordionSummary
+              //     expandIcon={<ExpandMoreIcon />}
+              //     aria-controls='panel1a-content'
+              //     id='panel1a-header'
+              //   >
+              //     <Typography>{item.dataset_name}</Typography>
+              //   </AccordionSummary>
+              //   <AccordionDetails>
+              //     <Typography component='span'>
+              //       <div>Source: {item.dataset_source}</div>
+              //       <div>File Type: {item.dataset_content_type}</div>
+              //       <div>Version: {item.dataset_version}</div>
+              //       <div>Date: {item.dataset_date}</div>
+                    // <Button
+                    //   color='primary'
+                    //   onClick={handleMoreDetails(item.dataset_id)}
+                    // >
+              //         More Details
+              //       </Button>
+              //     </Typography>
+              //   </AccordionDetails>
+              // </Accordion>
+              
+              // ---------------------------
+
+
+              <div className="card text-white bg-secondary m-3" key={item.dataset_id}>
+                <div className="card-header fs-4 bg-grey fw-bold">{item.dataset_name}</div>
+                <div className="card-body fs-15">
+                  {/* <h5 className="card-title fs-10">Source: {item.dataset_source}</h5> */}
+                  <p className="card-text">
+                  Source: {item.dataset_source}
+                  </p>
+                  <p>File Type: {item.dataset_content_type}
+                  <br></br>
+                  Version: {item.dataset_version}
+                  <br></br>
+                  Date: {item.dataset_date}</p>
+
+                  <button
+                      className="btn btn-info"
                       onClick={handleMoreDetails(item.dataset_id)}
                     >
                       More Details
-                    </Button>
-                  </Typography>
-                </AccordionDetails>
-              </Accordion>
+                    </button>
+                </div>
+              </div>
             ))}
         </div>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <div>
+      <div className="container d-flex flex-row flex-wrap">
           {data
             .filter(item => item.dataset_status === 'processing')
             .map(item => (
-              <Accordion key={item.dataset_id}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls='panel1a-content'
-                  id='panel1a-header'
-                >
-                  <Typography>{item.dataset_name}</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography component='span'>
-                    <div>Source: {item.dataset_source}</div>
-                    <div>File Type: {item.dataset_content_type}</div>
-                    <div>Version: {item.dataset_version}</div>
-                    <div>Date: {item.dataset_date}</div>
-                    <Button
-                      color='primary'
+              // <Accordion key={item.dataset_id}>
+              //   <AccordionSummary
+              //     expandIcon={<ExpandMoreIcon />}
+              //     aria-controls='panel1a-content'
+              //     id='panel1a-header'
+              //   >
+              //     <Typography>{item.dataset_name}</Typography>
+              //   </AccordionSummary>
+              //   <AccordionDetails>
+              //     <Typography component='span'>
+              //       <div>Source: {item.dataset_source}</div>
+              //       <div>File Type: {item.dataset_content_type}</div>
+              //       <div>Version: {item.dataset_version}</div>
+              //       <div>Date: {item.dataset_date}</div>
+              //       <Button
+              //         color='primary'
+              //         onClick={handleMoreDetails(item.dataset_id)}
+              //       >
+              //         More Details
+              //       </Button>
+              //     </Typography>
+              //   </AccordionDetails>
+              // </Accordion>
+
+
+              <div className="card text-white bg-secondary m-3" key={item.dataset_id}>
+                <div className="card-header fs-4 bg-grey fw-bold">{item.dataset_name}</div>
+                <div className="card-body fs-15">
+                  {/* <h5 className="card-title fs-10">Source: {item.dataset_source}</h5> */}
+                  <p className="card-text">
+                  Source: {item.dataset_source}
+                  </p>
+                  <p>File Type: {item.dataset_content_type}
+                  <br></br>
+                  Version: {item.dataset_version}
+                  <br></br>
+                  Date: {item.dataset_date}</p>
+
+                  <button
+                      className="btn btn-info"
                       onClick={handleMoreDetails(item.dataset_id)}
                     >
                       More Details
-                    </Button>
-                  </Typography>
-                </AccordionDetails>
-              </Accordion>
+                    </button>
+                </div>
+              </div>
             ))}
         </div>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <div>
+      <div className="container d-flex flex-row flex-wrap">
           {data
             .filter(item => item.dataset_status === 'approved')
             .map(item => (
-              <Accordion key={item.dataset_id}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls='panel1a-content'
-                  id='panel1a-header'
-                >
-                  <Typography>{item.dataset_name}</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography component='span'>
-                    <div>Source: {item.dataset_source}</div>
-                    <div>File Type: {item.dataset_content_type}</div>
-                    <div>Version: {item.dataset_version}</div>
-                    <div>Date: {item.dataset_date}</div>
-                    <Button
-                      color='primary'
+              // <Accordion key={item.dataset_id}>
+              //   <AccordionSummary
+              //     expandIcon={<ExpandMoreIcon />}
+              //     aria-controls='panel1a-content'
+              //     id='panel1a-header'
+              //   >
+              //     <Typography>{item.dataset_name}</Typography>
+              //   </AccordionSummary>
+              //   <AccordionDetails>
+              //     <Typography component='span'>
+              //       <div>Source: {item.dataset_source}</div>
+              //       <div>File Type: {item.dataset_content_type}</div>
+              //       <div>Version: {item.dataset_version}</div>
+              //       <div>Date: {item.dataset_date}</div>
+              //       <Button
+              //         color='primary'
+              //         onClick={handleMoreDetails(item.dataset_id)}
+              //       >
+              //         More Details
+              //       </Button>
+              //     </Typography>
+              //   </AccordionDetails>
+              // </Accordion>
+
+
+              <div className="card text-white bg-secondary m-3" key={item.dataset_id}>
+                <div className="card-header fs-4 bg-grey fw-bold">{item.dataset_name}</div>
+                <div className="card-body fs-15">
+                  {/* <h5 className="card-title fs-10">Source: {item.dataset_source}</h5> */}
+                  <p className="card-text">
+                  Source: {item.dataset_source}
+                  </p>
+                  <p>File Type: {item.dataset_content_type}
+                  <br></br>
+                  Version: {item.dataset_version}
+                  <br></br>
+                  Date: {item.dataset_date}</p>
+
+                  <button
+                      className="btn btn-info"
                       onClick={handleMoreDetails(item.dataset_id)}
                     >
                       More Details
-                    </Button>
-                  </Typography>
-                </AccordionDetails>
-              </Accordion>
+                    </button>
+                </div>
+              </div>
             ))}
         </div>
       </TabPanel>

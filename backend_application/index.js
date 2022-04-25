@@ -20,8 +20,8 @@ app.use(bodyParser.json())
 var con = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  // password: "Raj@2022",
-  password: 'Admin@123',
+  password: "Raj@2022",
+  // password: 'Admin@123',
   database: 'universal_table'
 })
 

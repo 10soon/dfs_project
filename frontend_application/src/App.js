@@ -8,6 +8,7 @@ import Login from './login'
 import globalContext from './globalContext'
 import DatasetInfo from './datasetinfo'
 import DivideDataset from './dividedataset'
+import style from "./index.css"
 
 function App () {
   const [user, setUser] = useState('')
@@ -40,7 +41,8 @@ function App () {
 
   return (
     <globalContext.Provider value={userSettings}>
-      <Header />
+      <Header 
+      style="backgroundColor: #e3f2fd;"/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
