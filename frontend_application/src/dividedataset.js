@@ -2,7 +2,7 @@ import { React, useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import axios from './axios'
 import 'react-folder-tree/dist/style.css'
-import FolderTree, { testData } from 'react-folder-tree'
+import FolderTree from 'react-folder-tree'
 import { styled } from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
@@ -17,8 +17,6 @@ const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(1),
   width: '100%',
-  //   height: '100%',
-  //   textAlign: 'center',
   color: theme.palette.text.secondary
 }))
 
@@ -28,18 +26,6 @@ const Div = styled('div')(({ theme }) => ({
   padding: theme.spacing(1)
 }))
 
-// const addUrl = node => {
-//     const fakeUrl = `root/${node.name}`;
-//   if (node.children) {
-//     node.url = fakeUrl;
-//     node.children = node.children.map(c => addUrl(c));
-//   } else {
-//     node.url = fakeUrl;
-//   }
-
-//   return node;
-//   };
-
 function DivideDataset () {
   const [data, setData] = useState([])
   const [file_type, setFileType] = useState('')
@@ -47,16 +33,13 @@ function DivideDataset () {
   const [empworkdata, setEmpWorkData] = useState([])
   const [tree_state, setTreeState] = useState({})
   const [base_path, setBasePath] = useState('')
+  const [total_datasets, setTotalDatasets] = useState(0)
+  const [mapped_datasets, setMappedDatasets] = useState(0)
   const [reconstructed_paths, setReconstructedPaths] = useState([])
   const [employees_arr, setEmployeesArr] = useState([])
   const [searchParams] = useSearchParams()
   const code = searchParams.get('datasetID')
   const navigate = useNavigate()
-
-  // function onNameClick ({ defaultOnClick, nodeData }) {
-  //   console.log(defaultOnClick)
-  //   console.log(nodeData)
-  // }
 
   function reconstruct_path_fn (
     t_state,
@@ -138,35 +121,61 @@ function DivideDataset () {
     // console.log(employees_arr)
   }
 
-  useEffect(() => {
-    async function fetchData () {
-      const req = await axios.get('/universal_table/get_dataset_info')
-      const req2 = await axios.get('/universal_table/get_employee_info')
-      const req3 = await axios.get('/universal_table/get_employee_work_info')
-      const req4 = await axios.get('/universal_table/get_data')
+  async function fetchData () {
+    const req = await axios.get('/universal_table/get_dataset_info')
+    const req2 = await axios.get('/universal_table/get_employee_info')
+    const req3 = await axios.get('/universal_table/get_employee_work_info')
+    const req4 = await axios.get('/universal_table/get_data')
 
-      setData(req.data.filter(item => item.dataset_id === code))
-      setEmpData(req2.data)
-      setEmpWorkData(req3.data)
-      setFileType(
-        req4.data.filter(item => item.dataset_id === code)[0]
-          .dataset_content_type
-      )
-    }
+    setData(req.data.filter(item => item.dataset_id === code))
+    setTotalDatasets(req.data.filter(item => item.dataset_id === code).length)
+    setEmpData(req2.data)
+    setEmpWorkData(req3.data)
+    setFileType(
+      req4.data.filter(item => item.dataset_id === code)[0].dataset_content_type
+    )
+  }
+
+  useEffect(() => {
     fetchData()
   }, [])
 
   useEffect(() => {
-    // console.log("emp proj data table: ", empworkdata)
-    var temp_arr = empworkdata.map(item => item.emp_project_path_id)
-    // console.log("path ids in emp proj data table: ", temp_arr)
-    setData(data.filter(item => !(temp_arr.includes(item.dataset_path_name))))
-    // console.log("dataset table with unmapped paths: ", data)
+    // console.log("new data mapped")
+
+    // console.log('emp proj data table: ', empworkdata)
+    var temp_arr = empworkdata.map(item => item.emp_project_path_name)
+    // console.log('path ids in emp proj data table: ', temp_arr)
+    setData(data.filter(item => !temp_arr.includes(item.dataset_path_name)))
+    // console.log('dataset table with unmapped paths: ', data)
+
+    // update mapped datasets count for current dataset ID
+    setMappedDatasets(
+      empworkdata.filter(
+        item => item.dataset_id === code && item.emp_project_status === 0
+      ).length
+    )
   }, [empworkdata])
 
-  // console.log("Dataset info", data);
-  // console.log("Emp info", empdata)
-  // console.log("emp work info", empworkdata)
+  useEffect(() => {
+    async function setUniversalTableStatus () {
+      await axios
+        .post('/universal_table/update_universal_table_status', {
+          dataset_status: 'processing',
+          dataset_id: code
+        })
+        .then(response => {
+          // console.log('Update of status complete.')
+        })
+    }
+    if (total_datasets > 0 && mapped_datasets === total_datasets) {
+      // console.log('No data left to be mapped.')
+      setUniversalTableStatus()
+      fetchData()
+      // not working properly
+      // navigate('/dashboard')
+    }
+  }, [mapped_datasets])
 
   useEffect(() => {
     var temp_tree_state = {}
@@ -272,7 +281,7 @@ function DivideDataset () {
       }
     }
     setTreeState(temp_tree_state)
-  }, [data])
+  }, [base_path, file_type, data])
 
   async function add_mapping_data () {
     // console.log(reconstructed_paths)
@@ -299,13 +308,14 @@ function DivideDataset () {
     // console.log(insert_obj)
 
     for (var obj of insert_obj) {
-      const response = await axios
+      await axios
         .post('/universal_table/set_emp_proj_data', {
           emp_id: obj.emp_id,
-          emp_path_id: obj.path_id
+          emp_path_id: obj.path_id,
+          dataset_id: code
         })
         .then(response => {
-          console.log('Insertion for ', obj.emp_id, 'complete')
+          // console.log('Insertion complete')
           // console.log(response.data)
         })
     }

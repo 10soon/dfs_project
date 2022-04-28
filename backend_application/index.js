@@ -20,8 +20,8 @@ app.use(bodyParser.json())
 var con = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: "Raj@2022",
-  // password: 'Admin@123',
+  // password: "Raj@2022",
+  password: 'Admin@123',
   database: 'universal_table'
 })
 
@@ -230,11 +230,62 @@ app.post('/universal_table/set_emp_proj_data', (req, res) => {
   console.log(req.body)
 
   con.query(
-    'INSERT INTO emp_proj_data (emp_id, emp_project_path_id) VALUES (?,?)',
-    [req.body.emp_id, req.body.emp_path_id],
+    'INSERT INTO emp_proj_data (emp_id, emp_project_path_name, dataset_id) VALUES (?,?,?)',
+    [req.body.emp_id, req.body.emp_path_id, req.body.dataset_id],
     function (err, result) {
       if (err) console.log(err)
       console.log(result)
+      res.status(200).send(result)
+    }
+  )
+})
+
+app.post('/universal_table/update_emp_proj_verification_status', (req, res) => {
+  console.log('Received update request for changing verification status')
+  console.log(req.body)
+
+  // console.log('dataset id: ', req.body.dataset_id)
+  con.query(
+    `update emp_proj_data set emp_project_status = '${req.body.emp_project_status}' where emp_project_path_name = '${req.body.emp_project_path_name}'`,
+    function (err, result) {
+      if (err) console.log('error ', err)
+      // console.log(result)
+      res.status(200).send(result)
+    }
+  )
+})
+
+app.post('/universal_table/update_emp_proj_comment', (req, res) => {
+  console.log('Received update request for updating comment')
+  console.log(req.body)
+  con.query(
+    `update emp_proj_data set emp_comments = '${req.body.emp_comments}' where emp_project_path_name = '${req.body.emp_project_path_name}'`,
+    function (err, result) {
+      if (err) console.log('error ', err)
+      res.status(200).send(result)
+    }
+  )
+})
+
+app.post('/universal_table/update_dataset_details_comment', (req, res) => {
+  console.log('Received update request for updating comment')
+  console.log(req.body)
+  con.query(
+    `update dataset_details set emp_comments = '${req.body.emp_comments}' where dataset_path_name = '${req.body.dataset_path_name}'`,
+    function (err, result) {
+      if (err) console.log('error ', err)
+      res.status(200).send(result)
+    }
+  )
+})
+
+app.post('/universal_table/update_universal_table_status', (req, res) => {
+  console.log('Received update request for updating universal table status')
+  console.log(req.body)
+  con.query(
+    `update universal_tables set dataset_status = '${req.body.dataset_status}' where dataset_id = '${req.body.dataset_id}'`,
+    function (err, result) {
+      if (err) console.log('error ', err)
       res.status(200).send(result)
     }
   )

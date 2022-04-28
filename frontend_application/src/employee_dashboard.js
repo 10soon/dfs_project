@@ -1,15 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import axios from './axios'
-import Accordion from '@mui/material/Accordion'
-import AccordionSummary from '@mui/material/AccordionSummary'
-import AccordionDetails from '@mui/material/AccordionDetails'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import Button from '@mui/material/Button'
 import {useNavigate} from 'react-router-dom'
+import globalContext from './globalContext'
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -47,6 +43,7 @@ function a11yProps (index: number) {
 function Employee_Dashboard () {
   const [data, setData] = useState([])
   const [value, setValue] = useState(0)
+  const myContext = useContext(globalContext)
   let navigate = useNavigate()
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -54,19 +51,39 @@ function Employee_Dashboard () {
     setValue(newValue)
   }
 
+  const handleMoreDetails = path_name => () => {
+    // console.log(path_name)
+    myContext.setDatasetPath(path_name)
+    const path = '/dashboard/employeedatasetinfo?dataset_path=' + path_name
+    navigate(path)
+  }
+
   useEffect(() => {
     async function fetchData () {
       // cuz base url already set up in axios.js
-      const req = await axios.get('/universal_table/get_data')
+      const req = await axios.get('/universal_table/get_employee_work_info')
 
       // whatever the request.data comes back us
-      setData(req.data)
+      setData(req.data.filter(item => item.emp_id === myContext.username))
     }
 
     fetchData()
-  }, [])
+  }, [myContext.username])
+
+  function get_file_name(path) {
+    var file_type = "xlsx"
+    var temp1 = path.split("."+file_type)
+
+    if(file_type === "xlsx") {
+      temp1 = temp1[0].split("/").slice(-1) + "-" + temp1[1].split("=")[1]
+    } else {
+      temp1 = temp1[0].split("/").slice(-1)
+    }
+    return temp1
+  }
 
   return (
+  
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
@@ -75,86 +92,66 @@ function Employee_Dashboard () {
           onChange={handleChange}
           aria-label='basic tabs example'
         >
+          
           <Tab label='To Be Verified' {...a11yProps(0)} />
-          <Tab label='In Process of Verification' {...a11yProps(1)} />
-          <Tab label='Verified' {...a11yProps(2)} />
+          <Tab label='Verified' {...a11yProps(1)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <div>
+      <div className="container d-flex flex-row flex-wrap">
           {data
-            .filter(item => item.status === 'Pending')
+            .filter(item => item.emp_project_status === 0)
             .map(item => (
-              <Accordion key={item.dataset_ID}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls='panel1a-content'
-                  id='panel1a-header'
-                >
-                  <Typography>{item.dataset_name}</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography component = "span">
-                    <div>Source: {item.source}</div>
-                    <div>File Type: {item.file_type}</div>
-                    <div>Version: {item.version}</div>
-                    <div>Date: {item.date_time}</div>
-                    <Button color='primary'>More Details</Button>
-                  </Typography>
-                </AccordionDetails>
-              </Accordion>
+                <div className="card text-white bg-secondary m-3" key={item.emp_project_path_name}>
+                <div className="card-header fs-4 bg-grey fw-bold">{get_file_name(item.emp_project_path_name)}</div>
+                <div className="card-body fs-15">
+                  {/* <h5 className="card-title fs-10">Source: {item.dataset_source}</h5> */}
+                  {/* <p className="card-text">
+                  Source: {item.dataset_source}
+                  </p>
+                  <p>File Type: {item.dataset_content_type}
+                  <br></br>
+                  Version: {item.dataset_version}
+                  <br></br>
+                  Date: {item.dataset_date}</p> */}
+
+                  <button
+                      className="btn btn-info"
+                      onClick={handleMoreDetails(item.emp_project_path_name)}
+                    >
+                      More Details
+                    </button>
+                </div>
+              </div>
             ))}
         </div>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <div>
+      <div className="container d-flex flex-row flex-wrap">
           {data
-            .filter(item => item.status === 'Processing')
+            .filter(item => item.emp_project_status === 1)
             .map(item => (
-              <Accordion key={item.dataset_ID}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls='panel1a-content'
-                  id='panel1a-header'
-                >
-                  <Typography>{item.dataset_name}</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography component = "span">
-                    <div>Source: {item.source}</div>
-                    <div>File Type: {item.file_type}</div>
-                    <div>Version: {item.version}</div>
-                    <div>Date: {item.date_time}</div>
-                    <Button color='primary'>More Details</Button>
-                  </Typography>
-                </AccordionDetails>
-              </Accordion>
-            ))}
-        </div>
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        <div>
-          {data
-            .filter(item => item.status === 'APPROVED')
-            .map(item => (
-              <Accordion key={item.dataset_ID}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls='panel1a-content'
-                  id='panel1a-header'
-                >
-                  <Typography>{item.dataset_name}</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography component = "span">
-                    <div>Source: {item.source}</div>
-                    <div>File Type: {item.file_type}</div>
-                    <div>Version: {item.version}</div>
-                    <div>Date: {item.date_time}</div>
-                    <Button color='primary'>More Details</Button>
-                  </Typography>
-                </AccordionDetails>
-              </Accordion>
+              <div className="card text-white bg-secondary m-3" key={item.emp_project_path_name}>
+                <div className="card-header fs-4 bg-grey fw-bold">{get_file_name(item.emp_project_path_name)}</div>
+                <div className="card-body fs-15">
+                  {/* <h5 className="card-title fs-10">Source: {item.dataset_source}</h5> */}
+                  {/* <p className="card-text">
+                  Source: {item.dataset_source}
+                  </p>
+                  <p>File Type: {item.dataset_content_type}
+                  <br></br>
+                  Version: {item.dataset_version}
+                  <br></br>
+                  Date: {item.dataset_date}</p> */}
+
+                  <button
+                      className="btn btn-info"
+                      onClick={handleMoreDetails(item.emp_project_path_name)}
+                    >
+                      More Details
+                    </button>
+                </div>
+              </div>
             ))}
         </div>
       </TabPanel>
