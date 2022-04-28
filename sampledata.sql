@@ -1,49 +1,74 @@
 create database if not exists `universal_table`;
 use `universal_table`;
 
+
+
 drop table if exists `universal_tables`;
 
+
+
 create table `universal_tables` (
-	`dataset_id` varchar(100) primary key,
-    `dataset_name` varchar(100) not null,
-    `dataset_source` varchar(100) not null,
-    `dataset_source_id` varchar(100) not null,
-    `dataset_version` varchar(100) default "1.0",
-    `dataset_date` datetime,
-    `dataset_status` varchar(100) default "pending",
-    `dataset_content_type` varchar(100) default "csv",
-    `dataset_path` varchar(500) not null,
-    `dataset_comment` varchar(500) default null
+`dataset_id` varchar(100) primary key,
+`dataset_name` varchar(100) not null,
+`dataset_source` varchar(100) not null,
+`dataset_source_id` varchar(100) not null,
+`dataset_version` varchar(100) default "1.0",
+`dataset_date` datetime,
+`dataset_status` varchar(100) default "pending",
+`dataset_content_type` varchar(100) default "csv",
+`dataset_path` varchar(500) not null,
+`dataset_comment` varchar(500) default null
 );
+
+
 
 drop table if exists `emp_data`;
 
+
+
 create table `emp_data` (
-	`emp_id` varchar(100) primary key,
-    `emp_role` int default 0
+`emp_id` varchar(100) primary key,
+`emp_role` int default 0
 );
+
+
 
 drop table if exists `dataset_details`;
 
+
+
 create table `dataset_details` (
-	`dataset_id` varchar(100),
-    `dataset_path_name` varchar(100) not null
+`dataset_id` varchar(100),
+`dataset_path_name` varchar(100) not null,
+`emp_comments` varchar(500) default null
 );
+
+
 
 drop table if exists `source_verification_status`;
 
+
+
 create table `source_verification_status` (
-	`source_id` varchar(100) primary key,
-    `date_verified` datetime default "2000-10-10 10:10:10"
+`source_id` varchar(100) primary key,
+`date_verified` datetime default "2000-10-10 10:10:10"
 );
+
+
 
 drop table if exists `emp_proj_data`;
 
+
+
 create table `emp_proj_data` (
-	`emp_id` varchar(100),
-    `emp_project_path_name` varchar(100) default null,
-    `emp_project_status` boolean default false
+`emp_id` varchar(100),
+`dataset_id` varchar(100),
+`emp_project_path_name` varchar(100) default null,
+`emp_project_status` boolean default false,
+`emp_comments` varchar(500) default null
 );
+
+
 
 insert into `universal_tables` (`dataset_id`, `dataset_name`, `dataset_source`, `dataset_source_id`, `dataset_version`, `dataset_date`, `dataset_status`, `dataset_content_type`, `dataset_path`, `dataset_comment`) values
 ("D1000", "covid_dataset_1", "aimedhubiiit", "1", "1.0", "2008-11-11 13:23:44", "pending", "xlsx", "../dataset_temp/covid1.zip", null),
@@ -58,6 +83,8 @@ insert into `universal_tables` (`dataset_id`, `dataset_name`, `dataset_source`, 
 ("D1009", "covid_dataset_10", "aimedhubiiit5", "5", "1.0", "2008-11-25 13:23:44", "pending", "xlsx", "../dataset_temp/covid10.zip", null),
 ("D1010", "covid_dataset_11", "aimedhubiiit5", "5", "1.0", "2008-11-19 13:23:44", "pending", "xlsx", "../dataset_temp/covid11.zip", null);
 
+
+
 insert into `emp_data` (`emp_id`, `emp_role`) values
 ("E001", 0),
 ("E002", 0),
@@ -71,4 +98,9 @@ insert into `emp_data` (`emp_id`, `emp_role`) values
 ("E010", 0),
 ("M001", 1);
 
+
+
 commit;
+
+-- ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Admin@123';
+-- flush privileges;universal_tables
