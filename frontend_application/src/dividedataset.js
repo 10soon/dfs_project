@@ -123,12 +123,15 @@ function DivideDataset () {
 
   async function fetchData () {
     const req = await axios.get('/universal_table/get_dataset_info')
-    const req2 = await axios.get('/universal_table/get_employee_info')
+    const req2 = await axios.get('/universal_table/get_employee_info2')
     const req3 = await axios.get('/universal_table/get_employee_work_info')
     const req4 = await axios.get('/universal_table/get_data')
 
     setData(req.data.filter(item => item.dataset_id === code))
     setTotalDatasets(req.data.filter(item => item.dataset_id === code).length)
+    console.log(req2.data.sort(function(a, b) {
+      return a.v - b.v
+    }))
     setEmpData(req2.data)
     setEmpWorkData(req3.data)
     setFileType(
@@ -159,7 +162,7 @@ function DivideDataset () {
 
   useEffect(() => {
     async function setUniversalTableStatus () {
-      await axios
+      const reqx = await axios
         .post('/universal_table/update_universal_table_status', {
           dataset_status: 'processing',
           dataset_id: code
@@ -382,7 +385,7 @@ function DivideDataset () {
       </Box>
     </div>
   ) : (
-    <div>NO DATA</div>
+    <div>Data Divided between Employees</div>
   )
 }
 

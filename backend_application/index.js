@@ -21,6 +21,7 @@ var con = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   // password: "Raj@2022",
+  // password: "Avi@1234",
   password: 'Admin@123',
   database: 'universal_table'
 })
@@ -154,10 +155,19 @@ app.get('/universal_table/get_source_data', (req, res) => {
     result,
     fields
   ) {
-    if (err) throw err
+    // if (err) throw err
     // console.log(result)
     res.status(200).send(result)
   })
+})
+
+app.get('/universal_table/get_employee_info2', (req, res) => {
+  con.query('drop table if exists temp');
+  con.query('create table temp as select emp_id, count(*) as v from emp_proj_data  group by emp_id');
+  con.query('select emp_data.emp_id, emp_data.emp_role, ifnull(temp.v, 0) as v from emp_data left join temp on emp_data.emp_id = temp.emp_id', function (err, result, fields){
+    if (err) throw err
+    res.status(200).send(result)
+  });
 })
 
 app.post('/universal_table/set_source_data', (req, res) => {
@@ -168,7 +178,7 @@ app.post('/universal_table/set_source_data', (req, res) => {
     'INSERT INTO source_verification_status VALUES (?,?)',
     [req.body.source_id, req.body.date_verified],
     function (err, result) {
-      if (err) console.log(err)
+      // if (err) console.log(err)
       // console.log(result)
       res.status(200).send(result)
     }
@@ -182,7 +192,59 @@ app.post('/universal_table/update_source_data', (req, res) => {
   con.query(
     `update source_verification_status set date_verified = '${req.body.date_verified}' where source_id = '${req.body.source_id}'`,
     function (err, result) {
-      if (err) console.log('error ', err)
+      // if (err) console.log('error ', err)
+      // console.log(result)
+      res.status(200).send(result)
+    }
+  )
+})
+
+app.post('/universal_table/get_v_total', (req, res) => {
+  console.log('Received request for processing status query...')
+
+  con.query(
+    `select count(*) as ret from emp_proj_data where dataset_id = '${req.body.data_id}'`,
+    function (err, result, fields) {
+      if (err) throw err
+      // console.log(result)
+      res.status(200).send(result)
+    }
+  )
+})
+
+app.post('/universal_table/get_v_status', (req, res) => {
+  console.log('Received request for processing status query...')
+
+  con.query(
+    `select count(*) as ret from emp_proj_data where dataset_id = '${req.body.data_id}' and emp_project_status=1`,
+    function (err, result, fields) {
+      if (err) throw err
+      // console.log(result)
+      res.status(200).send(result)
+    }
+  )
+})
+
+app.post('/universal_table/update_dataset_status_accept', (req, res) => {
+  console.log('Received update request for processing accepted status for dataset...')
+
+  con.query(
+    `update universal_tables set dataset_status = "approved" where dataset_id = '${req.body.source_id}'`,
+    function (err, result, fields) {
+      if (err) throw err
+      // console.log(result)
+      res.status(200).send(result)
+    }
+  )
+})
+
+app.post('/universal_table/update_dataset_status_reject', (req, res) => {
+  console.log('Received update request for processing rejected status for dataset...')
+
+  con.query(
+    `update universal_tables set dataset_status = "rejected" where dataset_id = '${req.body.source_id}'`,
+    function (err, result, fields) {
+      if (err) throw err
       // console.log(result)
       res.status(200).send(result)
     }
@@ -220,6 +282,13 @@ app.get('/universal_table/get_employee_info', (req, res) => {
 
 app.get('/universal_table/get_employee_work_info', (req, res) => {
   con.query('SELECT * FROM emp_proj_data', function (err, result, fields) {
+    if (err) throw err
+    res.status(200).send(result)
+  })
+})
+
+app.get('/universal_table/get_employee_work_info2', (req, res) => {
+  con.query('select d.*, e.dataset_content_type from universal_table.emp_proj_data as d, universal_table.universal_tables as e where d.dataset_id = e.dataset_id', function (err, result, fields) {
     if (err) throw err
     res.status(200).send(result)
   })

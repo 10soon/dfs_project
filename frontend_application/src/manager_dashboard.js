@@ -60,6 +60,13 @@ function Manager_Dashboard () {
     navigate(path)
   }
 
+  const handleMoreDetails2 = datasetID => () => {
+    // console.log(datasetID)
+    myContext.setDatasetIDfunc(datasetID)
+    const path = '/dashboard/datasetprocessing?datasetID=' + datasetID.toString()
+    navigate(path)
+  }
+
   useEffect(() => {
     async function fetchData () {
       // cuz base url already set up in axios.js
@@ -121,7 +128,7 @@ function Manager_Dashboard () {
         >
           <Tab label='To Be Verified' {...a11yProps(0)} />
           <Tab label='In Process of Verification' {...a11yProps(1)} />
-          <Tab label='Verified' {...a11yProps(2)} />
+          <Tab label='Processed' {...a11yProps(2)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
@@ -129,6 +136,7 @@ function Manager_Dashboard () {
           {data
             .filter(item => item.dataset_status === 'pending')
             .map(item => (
+              
               <div
                 className='card text-white bg-secondary m-3'
                 key={item.dataset_id}
@@ -140,7 +148,7 @@ function Manager_Dashboard () {
                   {/* <h5 className="card-title fs-10">Source: {item.dataset_source}</h5> */}
                   <p className='card-text'>Source: {item.dataset_source}</p>
                   <p>
-                    File Type: {item.dataset_content_type}
+                    File Type: {item.dataset_content_type.toUpperCase()}
                     <br></br>
                     Version: {item.dataset_version}
                     <br></br>
@@ -174,7 +182,7 @@ function Manager_Dashboard () {
                   {/* <h5 className="card-title fs-10">Source: {item.dataset_source}</h5> */}
                   <p className='card-text'>Source: {item.dataset_source}</p>
                   <p>
-                    File Type: {item.dataset_content_type}
+                    File Type: {item.dataset_content_type.toUpperCase()}
                     <br></br>
                     Version: {item.dataset_version}
                     <br></br>
@@ -183,7 +191,7 @@ function Manager_Dashboard () {
 
                   <button
                     className='btn btn-info'
-                    onClick={handleMoreDetails(item.dataset_id)}
+                    onClick={handleMoreDetails2(item.dataset_id)}
                   >
                     More Details
                   </button>
@@ -195,7 +203,7 @@ function Manager_Dashboard () {
       <TabPanel value={value} index={2}>
         <div className='container d-flex flex-row flex-wrap'>
           {data
-            .filter(item => item.dataset_status === 'approved')
+            .filter(item => item.dataset_status === 'approved' || item.dataset_status === 'rejected')
             .map(item => (
               <div
                 className='card text-white bg-secondary m-3'
@@ -208,19 +216,14 @@ function Manager_Dashboard () {
                   {/* <h5 className="card-title fs-10">Source: {item.dataset_source}</h5> */}
                   <p className='card-text'>Source: {item.dataset_source}</p>
                   <p>
-                    File Type: {item.dataset_content_type}
+                    File Type: {item.dataset_content_type.toUpperCase()}
                     <br></br>
                     Version: {item.dataset_version}
                     <br></br>
                     Date: {item.dataset_date}
+                    <br></br>
+                    Status: {item.dataset_status.toUpperCase()}
                   </p>
-
-                  <button
-                    className='btn btn-info'
-                    onClick={handleMoreDetails(item.dataset_id)}
-                  >
-                    More Details
-                  </button>
                 </div>
               </div>
             ))}

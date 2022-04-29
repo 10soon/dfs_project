@@ -5,7 +5,8 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import axios from './axios'
 import {useNavigate} from 'react-router-dom'
-import globalContext from './globalContext'
+import globalContext from './globalContext';
+import "./index.css";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -61,7 +62,7 @@ function Employee_Dashboard () {
   useEffect(() => {
     async function fetchData () {
       // cuz base url already set up in axios.js
-      const req = await axios.get('/universal_table/get_employee_work_info')
+      const req = await axios.get('/universal_table/get_employee_work_info2')
 
       // whatever the request.data comes back us
       setData(req.data.filter(item => item.emp_id === myContext.username))
@@ -70,8 +71,9 @@ function Employee_Dashboard () {
     fetchData()
   }, [myContext.username])
 
-  function get_file_name(path) {
-    var file_type = "xlsx"
+  function get_file_name(path, dataset_code) {
+    var file_type = dataset_code
+
     var temp1 = path.split("."+file_type)
 
     if(file_type === "xlsx") {
@@ -102,8 +104,9 @@ function Employee_Dashboard () {
           {data
             .filter(item => item.emp_project_status === 0)
             .map(item => (
-                <div className="card text-white bg-secondary m-3" key={item.emp_project_path_name}>
-                <div className="card-header fs-4 bg-grey fw-bold">{get_file_name(item.emp_project_path_name)}</div>
+              <div className="emp-card">
+                <div className="card text-white bg-warning m-4" key={item.emp_project_path_name}>
+                <div className="card-header fs-5 bg-grey fw-bold">{get_file_name(item.emp_project_path_name, item.dataset_content_type)}</div>
                 <div className="card-body fs-15">
                   {/* <h5 className="card-title fs-10">Source: {item.dataset_source}</h5> */}
                   {/* <p className="card-text">
@@ -123,6 +126,7 @@ function Employee_Dashboard () {
                     </button>
                 </div>
               </div>
+              </div>
             ))}
         </div>
       </TabPanel>
@@ -131,8 +135,9 @@ function Employee_Dashboard () {
           {data
             .filter(item => item.emp_project_status === 1)
             .map(item => (
-              <div className="card text-white bg-secondary m-3" key={item.emp_project_path_name}>
-                <div className="card-header fs-4 bg-grey fw-bold">{get_file_name(item.emp_project_path_name)}</div>
+              <div className="emp-card">
+              <div className="card text-white bg-success m-4" key={item.emp_project_path_name}>
+                <div className="card-header fs-5 bg-grey fw-bold">{get_file_name(item.emp_project_path_name, item.dataset_content_type)}</div>
                 <div className="card-body fs-15">
                   {/* <h5 className="card-title fs-10">Source: {item.dataset_source}</h5> */}
                   {/* <p className="card-text">
@@ -151,6 +156,7 @@ function Employee_Dashboard () {
                       More Details
                     </button>
                 </div>
+              </div>
               </div>
             ))}
         </div>

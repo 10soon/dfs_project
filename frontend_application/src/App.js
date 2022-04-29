@@ -8,6 +8,7 @@ import Login from './login'
 import globalContext from './globalContext'
 import DatasetInfo from './datasetinfo'
 import DivideDataset from './dividedataset'
+import DatasetProcessing from './datasetprocessing'
 import EmployeeDatasetInfo from './employeedatasetinfo'
 
 function App () {
@@ -55,6 +56,7 @@ function App () {
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={ role === 1 ? <Manager_Dashboard /> : <Employee_Dashboard />} />
         <Route path="/dashboard/datasetinfo" element={<DatasetInfo />} />
+        <Route path="/dashboard/datasetprocessing" element={<DatasetProcessing />} />
         <Route path="/dashboard/employeedatasetinfo" element={<EmployeeDatasetInfo />} />
         <Route path="/dashboard/dividedataset" element={<DivideDataset />} />
         <Route path="*" element={<div> Error 404. Page not found. </div>} />

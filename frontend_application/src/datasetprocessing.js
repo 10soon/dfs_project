@@ -18,90 +18,75 @@ const style = {
   p: 4
 }
 
-function Datasetinfo () {
+function DatasetProcessing () {
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
   const [data, setData] = useState([])
-  const [source_data, setSourceData] = useState([])
-  const [verify_src_btn_is_disabled, setSrcBtn] = useState(false)
+  const [verify_btn_is_disabled, setSrcBtn] = useState(true)
   const [searchParams] = useSearchParams()
   const [comment, setComment] = useState('')
+  // const [source_data, setSourceData] = useState([])
+  const [v_status, setVStatus] = useState(0)
+  const [v_total, setVTotal] = useState(0)
   const code = searchParams.get('datasetID')
   const navigate = useNavigate()
 
-  const handleDivideDataset = datasetID => () => {
-    console.log(datasetID)
-    // myContext.setDatasetIDfunc(datasetID)
-    const path = '/dashboard/dividedataset?datasetID=' + datasetID.toString()
-    navigate(path)
-  }
-
   async function fetchData () {
     const req = await axios.get('/universal_table/get_data')
+    const req1 = await axios.post('universal_table/get_v_total', {
+        data_id: code,
+    })
+    const req2 = await axios.post('/universal_table/get_v_status', {
+        data_id: code,
+    })
+
     setData(req.data.filter(item => item.dataset_id === code))
+    setVTotal(req1.data[0].ret)
+    setVStatus(req2.data[0].ret)
+
+    if (v_total === v_status)
+        setSrcBtn(true)
+    else
+        setSrcBtn(false)
   }
 
   useEffect(() => {
     fetchData()
   }, [code])
 
-  useEffect(() => {
-    async function fetchSource () {
-      const req = await axios.get('/universal_table/get_source_data')
-      if (data.length > 0) {
-        setSourceData(
-          req.data.filter(
-            item => item.source_id === data[0].dataset_source_id
-          )[0]
-        )
-      }
-    }
-    fetchSource()
-  }, [data])
+  // useEffect(() => {
+  //   async function fetchSource () {
+  //     const req = await axios.get('/universal_table/get_source_data')
+  //     if (data.length > 0) {
+  //       setSourceData(
+  //         req.data.filter(
+  //           item => item.source_id === data[0].dataset_source_id
+  //         )[0]
+  //       )
+  //     }
+  //   }
+  //   fetchSource()
+  // }, [data])
 
-  useEffect(() => {
-    async function update_source () {
-      var source_date = new Date(source_data.date_verified)
-      var today = new Date()
-      var diffTime = Math.abs(today - source_date)
-      var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
-      // console.log(source_data)
-      // console.log("Date diff in days: ", diffDays)
-
-      if (diffDays > 7) {
-        setSrcBtn(false)
-      } else {
-        setSrcBtn(true)
-      }
-    }
-
-    update_source()
-  }, [source_data])
-
-  async function verify_source () {
-    if (source_data !== undefined) {
-      var today = new Date()
-      await axios
-        .post('/universal_table/update_source_data', {
-          source_id: source_data.source_id,
-          date_verified: today
-            .toISOString()
-            .slice(0, 19)
-            .replace('T', ' ')
-        })
-        .then(response => {
-          console.log('Update complete')
-          setSrcBtn(true)
+  async function verify () {
+    if (v_status === v_total) {
+      const req3 = await axios.post('/universal_table/update_dataset_status_accept', {
+          source_id: code
         })
     }
+    navigate("/dashboard")
+  }
+
+  async function reject () {
+    const req3 = await axios.post('/universal_table/update_dataset_status_reject', {
+        source_id: code 
+    })
+    navigate("/dashboard")
   }
 
   async function commentSubmit (e) {
     e.preventDefault()
-    // console.log("Comment", comment)
-    // console.log(data[0].dataset_id)
     await axios
       .post('/universal_table/update_comments_data', {
         dataset_id: data[0].dataset_id,
@@ -117,7 +102,6 @@ function Datasetinfo () {
   return data.length > 0 ? (
     <div className='container my-5'>
       <div className='card border-primary mb-3'>
-        {/* <div className="card-header">Header</div> */}
         <div className='card-body data-card text-secondary fs-5'>
           <p className='card-text'>
             <span className='fw-bold text-dark fs-5'>Dataset Name: </span>{' '}
@@ -152,31 +136,31 @@ function Datasetinfo () {
             {data[0].dataset_path}
           </p>
           <p>
+            <span className='fw-bold text-dark fs-5'>Dataset Divisions Verified: </span>
+            {v_status}/{v_total}
+          </p>
+          <p>
             <span className='fw-bold text-dark fs-5'>Dataset Comment: </span>
             {data[0].dataset_comment}
           </p>
-
-          {/* <button type="button" className="btn btn-info m-2">Info</button>
-        <button type="button" className="btn btn-info m-2">Info</button>
-        <button type="button" className="btn btn-info m-2">Info</button> */}
 
           <Button
             className='m-2'
             id='verify_btn'
             variant='outlined'
-            disabled={verify_src_btn_is_disabled}
-            onClick={() => verify_source()}
+            disabled={verify_btn_is_disabled}
+            onClick={() => verify()}
           >
-            Verify Source
+            Accept
           </Button>
+
           <Button
-            className='btn btn-primary m-2'
-            id='divide_btn'
+            className='m-2'
+            id='verify_btn'
             variant='outlined'
-            disabled={!verify_src_btn_is_disabled}
-            onClick={handleDivideDataset(data[0].dataset_id)}
+            onClick={() => reject()}
           >
-            Divide Dataset
+            Reject
           </Button>
 
           <Button
@@ -219,4 +203,4 @@ function Datasetinfo () {
   )
 }
 
-export default Datasetinfo
+export default DatasetProcessing
